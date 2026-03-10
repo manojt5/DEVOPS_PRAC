@@ -1,9 +1,9 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Image to DockerHub
 
-on:
-  push:
-    branches:
-      - main   # or whichever branch you want to trigger on
+# on:
+#   push:
+#     branches:
+#       - main   # or whichever branch you want to trigger on
 
 jobs:
   docker:
