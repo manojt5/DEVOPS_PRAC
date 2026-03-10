@@ -1,7 +1,7 @@
 FROM nginx 
 COPY ./docker/index.html /usr/share/nginx/html/index.html
 
-EXPOSE 85
+EXPOSE 86
 
 # run,add,cmd<->entrypoint diffs
 # FROM python:3
