@@ -22,7 +22,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./project/backend
-          file: ./backend/Dockerfile.backend
+          file: ./project/backend/Dockerfile.backend
           push: true
           tags: manojt5/project-backend:latest
 
