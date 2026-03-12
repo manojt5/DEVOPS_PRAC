@@ -1,4 +1,3 @@
-FROM nginx 
+FROM nginx  
 COPY index.html /usr/share/nginx/html/index.html
-
-EXPOSE 85
+EXPOSE 80

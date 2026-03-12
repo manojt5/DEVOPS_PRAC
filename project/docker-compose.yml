@@ -2,10 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.frontend
-    # image: manojt5/project-frontend:latest
+    image: manojt5/project-frontend:latest
     container_name: frontend-web
     ports:
       - "8080:80"
@@ -16,10 +13,7 @@ services:
     restart: unless-stopped
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.backend
-    # image: manojt5/project-backend:latest
+    image: manojt5/project-backend:latest
     container_name: backend-api
     ports:
       - "3000:3000"
