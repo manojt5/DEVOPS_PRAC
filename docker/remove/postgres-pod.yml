@@ -11,11 +11,20 @@ spec:
     image: postgres:15-alpine
     env:
     - name: POSTGRES_DB
-      value: myapp
+      valueFrom:
+        secretKeyRef:
+          name: db-credentials
+          key: POSTGRES_DB
     - name: POSTGRES_USER
-      value: appuser
+      valueFrom:
+        secretKeyRef:
+          name: db-credentials
+          key: POSTGRES_USER
     - name: POSTGRES_PASSWORD
-      value: secret123
+      valueFrom:
+        secretKeyRef:
+          name: db-credentials
+          key: POSTGRES_PASSWORD
     volumeMounts:
     - name: postgres-data
       mountPath: /var/lib/postgresql/data
