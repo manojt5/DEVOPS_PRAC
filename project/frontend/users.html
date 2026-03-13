@@ -13,19 +13,38 @@
   <table id="usersTable">
     <tr><th>ID</th><th>Name</th><th>Email</th></tr>
   </table>
+<script>
+  async function loadUsers() {
+    const response = await fetch('/api/users');
+    const users = await response.json();
+    const table = document.getElementById('usersTable');
 
-  <script>
-    async function loadUsers() {
-      const response = await fetch('/api/users');
-      const users = await response.json();
-      const table = document.getElementById('usersTable');
-      users.forEach(u => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${u.id}</td><td>${u.name}</td><td>${u.email}</td>`;
-        table.appendChild(row);
-      });
+    // Clear existing rows except header
+    table.innerHTML = "<tr><th>ID</th><th>Name</th><th>Email</th><th>Actions</th></tr>";
+
+    users.forEach(u => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${u.id}</td>
+        <td>${u.name}</td>
+        <td>${u.email}</td>
+        <td><button onclick="deleteUser(${u.id})">Delete</button></td>
+      `;
+      table.appendChild(row);
+    });
+  }
+
+  async function deleteUser(id) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+    try {
+      await fetch('/api/users/' + id, { method: 'DELETE' });
+      loadUsers(); // refresh table
+    } catch (err) {
+      console.error("Error deleting user:", err);
     }
-    loadUsers();
-  </script>
+  }
+
+  loadUsers();
+</script>
 </body>
 </html>

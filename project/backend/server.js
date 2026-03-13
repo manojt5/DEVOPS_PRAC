@@ -70,5 +70,18 @@ app.get('/users', async (req, res) => {
     res.status(500).send("Error fetching users");
   }
 });
+// Delete user by ID
+app.delete('/users/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM users WHERE id = $1', [id]);
+    // Invalidate cache
+    await redisClient.del('users');
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error deleting user");
+  }
+});
 
 app.listen(3000, () => console.log("Backend running on port 3000"));

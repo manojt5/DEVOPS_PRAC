@@ -1,4 +1,4 @@
-name: Build and Push Docker Images
+name: Build, Push, and Deploy Fullstack App
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
           context: ./project/backend
           file: ./project/backend/Dockerfile.backend
           push: true
-          tags: manojt5/project-backend:latest
+          tags: manojt5/project-backend:${{ github.sha }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v4
@@ -32,7 +32,8 @@ jobs:
           context: ./project/frontend
           file: ./project/frontend/Dockerfile.frontend
           push: true
-          tags: manojt5/project-frontend:latest
+          tags: manojt5/project-frontend:${{ github.sha }}
+
       - name: Run integration tests with docker compose
         run: |
           docker compose -f project/docker-compose.yml up -d
@@ -40,4 +41,37 @@ jobs:
           curl -f http://localhost:8080 || (echo "Frontend not responding" && exit 1)
           docker compose -f project/docker-compose.yml down
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build   # only run after build job succeeds
 
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name team-4 --region ap-south-1 --profile ravi-varma.injeti
+
+      - name: Clean up old resources
+        run: kubectl delete -f ./project/fullstack-deployments.yaml -n html-app || true
+
+      - name: Apply Kubernetes manifest with commit SHA
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          # Substitute ${COMMIT_SHA} in your YAML before applying
+          envsubst < ./project/fullstack-deployments.yaml | kubectl apply -n html-app -f -
+
+      - name: Wait for rollout of all deployments
+        run: |
+          kubectl rollout status deployment/backend -n html-app
+          kubectl rollout status deployment/cache -n html-app
+          kubectl rollout status deployment/database -n html-app
+          kubectl rollout status deployment/frontend -n html-app

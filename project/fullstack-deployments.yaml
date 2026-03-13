@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend-web
-        image: manojt5/project-frontend:latest
+        image: manojt5/project-frontend:${COMMIT_SHA}
         ports:
         - containerPort: 80
         livenessProbe:
@@ -51,7 +51,7 @@ spec:
     spec:
       containers:
       - name: backend-api
-        image: manojt5/project-backend:latest
+        image: manojt5/project-backend:${COMMIT_SHA}
         ports:
         - containerPort: 3000
         env:
