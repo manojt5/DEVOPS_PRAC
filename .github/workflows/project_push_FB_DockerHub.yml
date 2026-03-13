@@ -57,7 +57,7 @@ jobs:
           aws-region: ap-south-1
 
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name team-4 --region ap-south-1 --profile ravi-varma.injeti
+        run: aws eks update-kubeconfig --name team-4 --region ap-south-1
 
       - name: Clean up old resources
         run: kubectl delete -f ./project/fullstack-deployments.yaml -n html-app || true
