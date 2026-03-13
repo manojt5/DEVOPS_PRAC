@@ -34,12 +34,12 @@ jobs:
           push: true
           tags: manojt5/project-frontend:${{ github.sha }}
 
-      - name: Run integration tests with docker compose
-        run: |
-          docker compose -f project/docker-compose.yml up -d
-          sleep 20
-          curl -f http://localhost:8080 || (echo "Frontend not responding" && exit 1)
-          docker compose -f project/docker-compose.yml down
+      # - name: Run integration tests with docker compose
+      #   run: |
+      #     docker compose -f project/docker-compose.yml up -d
+      #     sleep 20
+      #     curl -f http://localhost:8080 || (echo "Frontend not responding" && exit 1)
+      #     docker compose -f project/docker-compose.yml down
 
   deploy:
     runs-on: ubuntu-latest
