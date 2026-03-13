@@ -11,8 +11,9 @@
 <body>
   <h1 style="text-align:center;">User List</h1>
   <table id="usersTable">
-    <tr><th>ID</th><th>Name</th><th>Email</th></tr>
-  </table>
+  <tr><th>ID</th><th>Name</th><th>Email</th><th>Actions</th></tr>
+</table>
+
 <script>
   async function loadUsers() {
     const response = await fetch('/api/users');

@@ -66,8 +66,17 @@ jobs:
         env:
           COMMIT_SHA: ${{ github.sha }}
         run: |
-          # Substitute ${COMMIT_SHA} in your YAML before applying
+          # Show the manifest after substitution
+          echo "=== Rendered manifest with COMMIT_SHA ==="
+          envsubst < ./project/fullstack-deployments.yaml
+
+          # Apply it to the cluster
           envsubst < ./project/fullstack-deployments.yaml | kubectl apply -n html-app -f -
+
+      - name: Verify deployed images
+        run: |
+          echo "=== Images running in html-app namespace ==="
+          kubectl get pods -n html-app -o jsonpath='{range .items[*]}{.metadata.name}{" -> "}{.spec.containers[*].image}{"\n"}{end}'
 
       - name: Wait for rollout of all deployments
         run: |
